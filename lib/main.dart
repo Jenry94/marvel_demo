@@ -13,5 +13,13 @@ void main() {
     initialBinding: SplashBinding(),
     initialRoute: Routes.SPLASH,
     getPages: AppPages.pages,
+    theme: ThemeData(
+      useMaterial3: false,
+      colorScheme: ThemeData().colorScheme.copyWith(primary: Colors.red),
+      inputDecorationTheme: InputDecorationTheme(
+        fillColor: Colors.grey.shade100,
+        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+      ),
+    ),
   ));
 }

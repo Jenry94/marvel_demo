@@ -1,14 +1,15 @@
 import 'dart:convert';
 
+import 'package:demo_marvel/app/data/models/marvel_response_model.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/error_model.dart';
+import '../data/models/error_model.dart';
+import '../routes/app_pages.dart';
 
 class HomeController extends GetxController {
   RxBool isLoading = false.obs;
   HandleError fetchDataError = HandleError(error: false);
-
 
 
   void fetchData() async {
@@ -17,7 +18,8 @@ class HomeController extends GetxController {
       http.Response response = await http.get(Uri.parse('https://api.opensea.io/api/v1/assets?collection=cryptopunks'));
       if (response.statusCode == 200) {
         var result = jsonDecode(response.body);
-       // openseaModel = OpenseaModel.fromJson(result);
+        var marvelResponse = MarvelResponse.fromJson(result);
+
       } else {
         fetchDataError = HandleError(error: true, mensaje: 'error fetching data');
       }
@@ -26,6 +28,11 @@ class HomeController extends GetxController {
     } finally {
       isLoading(false);
     }
+  }
+
+
+  void goToDetail() {
+    Get.toNamed(Routes.HERO_DETAIL);
   }
   
 }
