@@ -1,12 +1,13 @@
 import 'package:demo_marvel/app/bindings/splash_binding.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await dotenv.load(fileName: '.env.marvel');
   runApp(GetMaterialApp(
     fallbackLocale: Locale('es', 'ES'),
     debugShowCheckedModeBanner: false,

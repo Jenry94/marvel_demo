@@ -22,8 +22,9 @@ class DetailPage extends GetView<DetailController> {
           height: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             image: DecorationImage(
+              fit: BoxFit.cover,
               image: NetworkImage(
-                'https://flash.comiccruncher.com/images/characters/0b80ff30.jpg'
+                '${controller.character.thumbnail.path}.${controller.character.thumbnail.extension}'
               )
             )
           )
@@ -37,11 +38,22 @@ class DetailPage extends GetView<DetailController> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(100),
-                  topRight: Radius.circular(100),
+                  topLeft: Radius.elliptical(80, 50),
+                  topRight:Radius.elliptical(80, 50),
                 )
               ),
-              child: info(context),
+              child: Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * .05),
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      description(context),
+                      comics(context)
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         )
@@ -49,51 +61,81 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
-  Widget info(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width * .05),
+  Widget description(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        header(context),
+        if(controller.character.description.isNotEmpty)
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.width * .035,
+          ),
+          child: Chip(
+              label: Text(
+                'Descripción',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: MediaQuery.of(context).size.width * .04
+                ),
+              ),
+              backgroundColor: Colors.black,
+            ),
+        ),
+        if(controller.character.description.isNotEmpty)
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.width * .05
+          ),
+          child: Text(
+            controller.character.description,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: MediaQuery.of(context).size.width * .035
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget comics(context) {
+    return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          header(context),
           Padding(
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).size.width * .035,
             ),
-            child: Text(
-              'Descripción',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontSize: MediaQuery.of(context).size.width * .04
+            child: Chip(
+              label: Text(
+                'Cómics',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: MediaQuery.of(context).size.width * .04
+                ),
               ),
+              backgroundColor: Colors.black,
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).size.width * .05,
-            ),
-            child: Text(
-              'EL HOMBRE DE HIERROooooooooooooooooooooooooooooooooooooooooo',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: MediaQuery.of(context).size.width * .035
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: controller.character.comics.items.map((comic){
+                  return Text(
+                    '• ${comic.name}',
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * .035
+                    ),
+                  );
+                }).toList(),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).size.width * .035,
-            ),
-            child: Text(
-              'Cómics',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontSize: MediaQuery.of(context).size.width * .04
-              ),
-            ),
-          ),
+          )
         ],
       ),
     );
@@ -115,11 +157,11 @@ class DetailPage extends GetView<DetailController> {
             ),
           ),
           Expanded(
-            flex: 5,
+            flex: 8,
             child: Text(
-              'IRON MAN',
+              controller.character.name,
               style: TextStyle(
-                fontSize: MediaQuery.of(context).size.width * .095,
+                fontSize: MediaQuery.of(context).size.width * .075,
                 fontFamily: 'Marvel',
                 fontWeight: FontWeight.bold,
                 color: Colors.black

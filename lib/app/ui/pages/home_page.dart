@@ -5,6 +5,8 @@ import 'package:demo_marvel/app/ui/global_widgets/card_hero_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../routes/app_pages.dart';
+
 class HomePage extends GetView<HomeController> {
   const HomePage({super.key});
 
@@ -13,7 +15,7 @@ class HomePage extends GetView<HomeController> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: appBar(context),
-      body: body(context),
+      body: body(context)
     );
   }
 
@@ -28,7 +30,26 @@ class HomePage extends GetView<HomeController> {
           fontFamily: 'Marvel',
           color: Colors.white
         )
-      )
+      ),
+      actions: [
+        Obx(()=>
+          Visibility(
+            visible: controller.listCharacters.isNotEmpty,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Chip(
+                label: Text(
+                  '${controller.listCharacters.length}/${controller.totalCharacters}',
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                ),
+                backgroundColor: Colors.black
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -36,19 +57,27 @@ class HomePage extends GetView<HomeController> {
     return Column(
       children: [
         searchField(context),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
+        Obx(() => Expanded(
+            child: Stack(
               children: [
-                CardHeroItem(
-                  onTap: () {
-                    controller.goToDetail();
-                  },
-                )
+                ListView(
+                  controller: controller.scrollController,
+                  children: controller.filteredCharacters.map((character) {
+                    return CardHeroItem(
+                      character: character,
+                      onTap: () {
+                        Get.toNamed(Routes.HERO_DETAIL, arguments: character);
+                      },
+                    );
+                  }).toList(),
+                ),
+                if(controller.isLoading.value)
+                  Center(child: CircularProgressIndicator())
               ],
             ),
           ),
         ),
+        SizedBox(height: 30)
       ],
     );
   }
@@ -64,6 +93,7 @@ class HomePage extends GetView<HomeController> {
             suffixIcon: Icon(Icons.search),
             filled: true,
           ),
+          onChanged: (value) => controller.filterList(value),
         ),
       ),
     );
