@@ -38,7 +38,7 @@
       que contiene información sobre su posición en la jerarquía.
 
     8.- ¿Cómo almacenar información en el dispositivo?
-    Depende mucho de los tipos y cantidad de datos que se requiera almacenar hay varias maneras dependiendo lo antes comentado
+     Depende mucho de los tipos y cantidad de datos que se requiera almacenar hay varias maneras dependiendo lo antes comentado
       - SharedPreferences: Para akmacenar datos simples y pequeñas cantidades de datos, como configuraciones de la aplicación,
         preferencias del usuario.
       - SQLite: Para almacenar una mayor catidad de datos estructurados en una base de datos relacional.
