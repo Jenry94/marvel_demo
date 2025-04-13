@@ -2,11 +2,13 @@ import 'package:demo_marvel/app/data/models/marvel_response_model.dart';
 import 'package:demo_marvel/app/data/provider/marvel_api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class HomeController extends GetxController {
   final _apiProvider = MarvelApiProvider();
   int _offset = 0;
   int _limit = 20;
+  final _storage = GetStorage();
   final scrollController = ScrollController();
   RxBool isLoading = false.obs;
   RxList<Character> listCharacters = <Character>[].obs;
@@ -22,7 +24,7 @@ class HomeController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    getCharacters();
+    _loadCharactersStorage();
   }
 
   ///Metodo para hacer la consulta de los personajes al API
@@ -34,6 +36,7 @@ class HomeController extends GetxController {
         var marvelResponse = MarvelResponse.fromJson(response.body);
         listCharacters = listCharacters + marvelResponse.data.results;
         filteredCharacters.assignAll(listCharacters);
+        _saveCharacters();
         totalCharacters = marvelResponse.data.total;
         _limit = 10;
         _offset += marvelResponse.data.count;
@@ -74,6 +77,25 @@ class HomeController extends GetxController {
       filteredCharacters.assignAll(
         listCharacters.where((c) => c.name.toLowerCase().contains(text.toLowerCase())),
       );
+    }
+  }
+
+  //Metodo para guardar los personajes localmente
+  void _saveCharacters() {
+    _storage.write('characters', listCharacters.map((e) => e.toJson()).toList());
+  }
+
+  //Metodo para cargar los personajes localmente
+  void _loadCharactersStorage() {
+    final storedData = _storage.read<List>('characters');
+    if (storedData != null) {
+      final cachedCharacters = storedData.map((e) => Character.fromJson(e)).toList();
+      listCharacters.assignAll(cachedCharacters);
+      filteredCharacters.assignAll(cachedCharacters);
+      _limit = 10;
+      _offset += listCharacters.length;
+    } else {
+      getCharacters();
     }
   }
   
