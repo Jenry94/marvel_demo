@@ -36,8 +36,8 @@ class HomeController extends GetxController {
         var marvelResponse = MarvelResponse.fromJson(response.body);
         listCharacters = listCharacters + marvelResponse.data.results;
         filteredCharacters.assignAll(listCharacters);
-        _saveCharacters();
         totalCharacters = marvelResponse.data.total;
+        _saveCharacters();
         _limit = 10;
         _offset += marvelResponse.data.count;
       } else {
@@ -83,6 +83,7 @@ class HomeController extends GetxController {
   //Metodo para guardar los personajes localmente
   void _saveCharacters() {
     _storage.write('characters', listCharacters.map((e) => e.toJson()).toList());
+    _storage.write('totalCharacters', totalCharacters);
   }
 
   //Metodo para cargar los personajes localmente
@@ -92,11 +93,11 @@ class HomeController extends GetxController {
       final cachedCharacters = storedData.map((e) => Character.fromJson(e)).toList();
       listCharacters.assignAll(cachedCharacters);
       filteredCharacters.assignAll(cachedCharacters);
+      totalCharacters = _storage.read<int>('totalCharacters') ?? 0;
       _limit = 10;
       _offset += listCharacters.length;
     } else {
       getCharacters();
     }
   }
-  
 }
