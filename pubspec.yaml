@@ -30,6 +30,7 @@ flutter:
     - .env.marvel
     - assets/
     - assets/fonts/
+    - assets/images/
 
   fonts:
     - family: Marvel

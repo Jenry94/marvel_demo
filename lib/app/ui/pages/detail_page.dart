@@ -17,17 +17,19 @@ class DetailPage extends GetView<DetailController> {
   Widget body(BuildContext context) {
     return Stack(
       children: [
-        Container(
+        SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: NetworkImage(
-                '${controller.character.thumbnail.path}.${controller.character.thumbnail.extension}'
-              )
-            )
-          )
+          child: Image.network(
+            '${controller.character.thumbnail.path}.${controller.character.thumbnail.extension}',
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                'assets/images/marvel_default.jpg',
+                fit: BoxFit.cover,
+              );
+            },
+          ),
         ),
         Column(
           children: [

@@ -39,24 +39,32 @@ class CardHeroItem extends StatelessWidget {
 
 
   Widget image(BuildContext context) {
+    final borderRadius = BorderRadius.only(
+      topRight: Radius.circular(100),
+      bottomRight: Radius.circular(100),
+      topLeft: Radius.circular(4),
+      bottomLeft: Radius.circular(4),
+    );
     return Container(
       margin: EdgeInsets.only(right:  MediaQuery.of(context).size.width * .025),
       width: MediaQuery.of(context).size.width * .3,
       height: MediaQuery.of(context).size.height * .135,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(100),
-          bottomRight: Radius.circular(100),
-          topLeft: Radius.circular(4),
-          bottomLeft: Radius.circular(4)
-        ),
-        image: DecorationImage(
+        borderRadius: borderRadius,
+      ),
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: Image.network(
+          '${character.thumbnail.path}.${character.thumbnail.extension}',
           fit: BoxFit.cover,
-          image: NetworkImage(
-            '${character.thumbnail.path}.${character.thumbnail.extension}'
-          )
-        )
-      )
+          errorBuilder: (context, error, stackTrace) {
+            return Image.asset(
+              'assets/images/marvel_default.jpg',
+              fit: BoxFit.cover,
+            );
+          },
+        ),
+      ),
     );
   }
 
